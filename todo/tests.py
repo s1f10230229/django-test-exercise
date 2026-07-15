@@ -109,7 +109,7 @@ class TodoViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name, 'todo/detail.html')
         self.assertEqual(response.context['task'], task)
-    
+
     def test_detail_get_fail(self):
         client = Client()
         response = client.get('/1/')
@@ -134,5 +134,39 @@ class TodoViewTestCase(TestCase):
         
         url = reverse('delete', args=[999])
         response = client.get(url)
+        
+    def test_update_get_success(self):
+        task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+        client = Client()
+        response = client.get('/{}/update'.format(task.pk))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'todo/edit.html')
+        self.assertEqual(response.context['task'], task)
+
+    def test_update_get_fail(self):
+        client = Client()
+        response = client.get('/1/update')
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_post_success(self):
+        task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+        client = Client()
+        data = {'title': 'task1_updated', 'due_at': '2024-07-02 23:59:59'}
+        response = client.post('/{}/update'.format(task.pk), data)
+
+        self.assertRedirects(response, '/{}/'.format(task.pk))
+
+        task.refresh_from_db()
+        self.assertEqual(task.title, 'task1_updated')
+        self.assertEqual(task.due_at, timezone.make_aware(datetime(2024, 7, 2, 23, 59, 59)))
+
+    def test_update_post_fail(self):
+        client = Client()
+        data = {'title': 'task1_updated', 'due_at': '2024-07-02 23:59:59'}
+        response = client.post('/1/update', data)
 
         self.assertEqual(response.status_code, 404)
