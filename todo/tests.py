@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
+from django.urls import reverse
 
 
 # Create your tests here.
@@ -115,6 +116,25 @@ class TodoViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    def test_delete_success(self):
+        task = Task(title='task_to_delete', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+        
+        client = Client()
+        
+        url = reverse('delete', args=[task.pk])
+        response = client.get(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/')
+        self.assertFalse(Task.objects.filter(pk=task.pk).exists())
+
+    def test_delete_fail(self):
+        client = Client()
+        
+        url = reverse('delete', args=[999])
+        response = client.get(url)
+        
     def test_update_get_success(self):
         task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
         task.save()
