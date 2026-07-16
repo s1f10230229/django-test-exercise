@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from django.utils.dateparse import parse_datetime
 from todo.models import Task
 from django.urls import reverse
@@ -38,6 +38,7 @@ def detail(request, task_id):
 
     context = {
         'task': task,
+        'now': now(),
     }
     return render(request, 'todo/detail.html', context)
 

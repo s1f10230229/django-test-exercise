@@ -7,30 +7,53 @@
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
     <link rel="stylesheet" href="{% static 'todo/style.css' %}">
+    <link rel="stylesheet" href="{% static 'todo/detail.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   </head>
 
   <body>
-    <h1>{{ task.title }}</h1>
-    <ul>
-      <li>Posted at: {{ task.posted_at }}</li>
-      {% if task.due_at %}
-      <li>Due at: {{ task.due_at }}</li>
-      {% endif %}
+    <main>
+      <h1>{{ task.title }}</h1>
       {% if task.description %}
-      <li>Description: {{ task.description }}</li>
+      <p class="description">{{ task.description }}</p>
       {% endif %}
-      {% if task.completed %}
-      <li>Status: Completed</li>
-      {% else %}
-      <li>Status: Not Completed</li>
-      {% endif %}
-    </ul>
 
-    <div>
-      <a href="{% url 'index' %}">Top</a>
-      <a href="{% url 'update' task.id %}">Edit</a>
-      <a href="{% url 'delete' task.id %}">Delete</a>
-    </div>
+      <table class="detail-table">
+        <tr>
+          <th>Posted at</th>
+          <td>{{ task.posted_at }}</td>
+        </tr>
+        <tr {% if not task.completed and task.due_at and task.due_at < now %} class="overdue"{% endif %}>
+          <th>Due at</th>
+          <td>
+            {% if task.due_at %}
+            {{ task.due_at }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+        <tr {% if not task.completed and task.due_at and task.due_at < now %} class="overdue" {% endif %}>
+          <th>Status</th>
+          <td>
+            {% if task.completed %}
+            Completed
+            {% else %}
+            Not Completed
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+
+      <p> {% if not task.completed and task.due_at and task.due_at < now %} This task is overdue but not completed yet. {% endif %} </p>
+
+      <div class="nav-links">
+        <a href="{% url 'index' %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i>  Top</a>
+        <a href="" class="btn btn-done"><i class="fa-solid fa-check"></i>  Done</a>
+        <a href="{% url 'update' task.id %}" class="btn btn-primary"><i class="fa-solid fa-pen"></i>  Edit</a>
+        <a href="{% url 'delete' task.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i>  Delete</a>
+      </div>
+    </main>
   </body>
 
 </html>
