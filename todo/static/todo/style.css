@@ -153,3 +153,33 @@ h1 {
 h1:hover {
   transform: translateY(-2px);
 }
+
+/* Task item list flex layout and buttons styling */
+.text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.text ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.task-actions {
+  margin-top: 0;
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+}
