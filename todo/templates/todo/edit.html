@@ -23,6 +23,10 @@
         <input id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at |date:"Y-m-d H:i" }}">
       </div>
       <div>
+        <label for="descInput">Description</label><br>
+        <textarea id="descInput" name="description" rows="4" cols="40">{{ task.description }}</textarea>
+      </div>
+      <div>
         <button type="submit">Submit</button>
       </div>
     </form>

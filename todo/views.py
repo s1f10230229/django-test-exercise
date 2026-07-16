@@ -11,7 +11,12 @@ from django.urls import reverse
 
 def index(request):
     if request.method == 'POST':
-        task = Task(title=request.POST['title'], due_at=make_aware(parse_datetime(request.POST['due_at'])))
+        raw_due = request.POST.get('due_at', '')
+        due = None
+        if raw_due:
+            due = make_aware(parse_datetime(raw_due))
+        description = request.POST.get('description', '')
+        task = Task(title=request.POST.get('title', ''), due_at=due, description=description)
         task.save()
 
     if request.GET.get('order') == 'due':
@@ -44,7 +49,12 @@ def update(request, task_id):
         raise Http404("Task does not exist")
     if request.method == 'POST':
         task.title = request. POST['title']
-        task.due_at = make_aware(parse_datetime(request.POST['due_at']))
+        raw_due = request.POST.get('due_at', '')
+        if raw_due:
+            task.due_at = make_aware(parse_datetime(raw_due))
+        else:
+            task.due_at = None
+        task.description = request.POST.get('description', '')
         task.save()
         return redirect(detail, task_id)
     context = {
