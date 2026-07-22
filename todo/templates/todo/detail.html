@@ -49,9 +49,9 @@
 
       <div class="nav-links">
         <a href="{% url 'index' %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i>  Top</a>
-        <a href="" class="btn btn-done"><i class="fa-solid fa-check"></i>  Done</a>
         <a href="{% url 'update' task.id %}" class="btn btn-primary"><i class="fa-solid fa-pen"></i>  Edit</a>
         <a href="{% url 'delete' task.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i>  Delete</a>
+        <a href="{% url 'close' task.id %}" class="btn btn-done"><i class="fa-solid fa-check"></i>Close</a>
       </div>
     </main>
   </body>
