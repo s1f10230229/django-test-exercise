@@ -170,3 +170,24 @@ class TodoViewTestCase(TestCase):
         response = client.post('/1/update', data)
 
         self.assertEqual(response.status_code, 404)
+
+    def test_close_success(self):
+        task = Task(title='task_to_close', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+
+        client = Client()
+        url = reverse('close', args=[task.pk])
+        response = client.get(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/')
+
+        task.refresh_from_db()
+        self.assertTrue(task.completed)
+
+    def test_close_fail(self):
+        client = Client()
+        url = reverse('close', args=[999])
+        response = client.get(url)
+
+        self.assertEqual(response.status_code, 404)
